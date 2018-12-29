@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 bookmarks-parser = {editable = true,path = "."}
+pytest = "*"
 
 [packages]
 html5lib = "*"
