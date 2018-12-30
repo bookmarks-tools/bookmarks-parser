@@ -8,6 +8,7 @@ bookmarks-parser = {editable = true,path = "."}
 pytest = "*"
 codecov = "*"
 pytest-cov = "*"
+pathlib2 = "*"
 
 [packages]
 html5lib = "*"
