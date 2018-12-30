@@ -1,0 +1,14 @@
+language: python
+python:
+  - "3.7"
+
+# command to install dependencies
+install:
+  - pip install pipenv
+  - pipenv install --dev
+
+# command to run tests
+script:
+  - pipenv run pytest --cov=bookmarks_parser
+after_success:
+  - codecov

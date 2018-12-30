@@ -1,3 +1,6 @@
 example
 bookmarks_parser.egg-info
 /.idea/
+/htmlcov/
+/.coverage
+/.pytest_cache/
