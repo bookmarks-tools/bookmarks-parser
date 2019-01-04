@@ -1,46 +1,76 @@
-import html5lib
-
-
-def get_tag_name(tag):
-    return tag[tag.rindex('}') + 1:]
+from bs4 import BeautifulSoup
 
 
 def get_node_data(node):
     data = {}
     for child in node:
-        tag_name = get_tag_name(child.tag)
-        if tag_name == 'a':
+        if child.name == 'a':
             data['type'] = 'bookmark'
             data['url'] = child.get('href')
             data['title'] = child.text
             data['add_date'] = child.get('add_date')
             data['icon'] = child.get('icon')
-        elif tag_name == 'h3':
+            # only in FF
+            icon_uri = child.get('icon_uri')
+            if icon_uri:
+                data['icon_uri'] = icon_uri
+        elif child.name == 'h3':
             data['type'] = 'folder'
             data['title'] = child.text
             data['add_date'] = child.get('add_date')
             data['last_modified'] = child.get('last_modified')
-        elif tag_name == 'dl':
+
+            data['ns_root'] = None
+            # for Bookmarks Toolbar in FF and Bookmarks bar in Chrome
+            if child.get('personal_toolbar_folder'):
+                data['ns_root'] = 'toolbar'
+            # FF Other Bookmarks
+            if child.get('unfiled_bookmarks_folder'):
+                data['ns_root'] = 'other_bookmarks'
+        elif child.name == 'dl':
+            # store DL element reference for further processing the child nodes
             data['__dir_dl'] = child
+
+    if data['type'] == 'folder' and not data.get('__dir_dl'):
+        if node.next_sibling and node.next_sibling.name == "dd":
+            dls = node.next_sibling.find_all('dl')
+            if dls:
+                data['__dir_dl'] = dls[0]
     return data
 
 
-def process_dir(bookmark_dir):
+def process_dir(bookmark_dir, level):
     items = []
+    menu_root = None
     for child in bookmark_dir:
-        tag_name = get_tag_name(child.tag)
-        if tag_name != 'dt':
+        if child.name != 'dt':
             continue
         item_data = get_node_data(child)
-        if item_data.get('__dir_dl'):
-            item_data['children'] = process_dir(item_data['__dir_dl'])
-            del item_data['__dir_dl']
-        items.append(item_data)
+        if level == 0 and (not item_data.get('ns_root')):
+            if not menu_root:
+                # For chrome
+                if child.previous_sibling.name == "dt":
+                    menu_root = {'title': "Other bookmarks", 'children': [], 'ns_root': 'menu'}
+                # for FF
+                else:
+                    menu_root = {'title': "Bookmarks Menu", 'children': [], 'ns_root': 'menu'}
+            if item_data.get('__dir_dl'):
+                item_data['children'] = process_dir(item_data['__dir_dl'], level + 1)
+                del item_data['__dir_dl']
+            menu_root['children'].append(item_data)
+        else:
+            if item_data.get('__dir_dl'):
+                item_data['children'] = process_dir(item_data['__dir_dl'], level + 1)
+                del item_data['__dir_dl']
+            items.append(item_data)
+    if menu_root:
+        items.append(menu_root)
     return items
 
 
 def parse(file_path):
     with open(file_path, 'rb') as f:
-        document = html5lib.parse(f)
-    bookmarks = process_dir(document[1][1])
+        soup = BeautifulSoup(f, "html5lib")
+    dls = soup.find_all('dl')
+    bookmarks = process_dir(dls[0], 0)
     return bookmarks

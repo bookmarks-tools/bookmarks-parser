@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "bookmarks-parser"
+version = "0.1.0"
+description = "netscape bookmarks parser"
+authors = ["Andriy Orehov <andriyorehov@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/andriyor/amalgama-pq"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+beautifulsoup4 = "^4.7"
+html5lib = "^1.0"
+
+[tool.poetry.dev-dependencies]
+pathlib2 = "^2.3"
+pytest = "^4.0"
+codecov = "^2.0"
+pytest-cov = "^2.6"
+scandir = "^1.9"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

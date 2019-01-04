@@ -5,12 +5,12 @@ python:
   - "3.6"
 
 # command to install dependencies
+before_install:
+  - pip install poetry
 install:
-  - pip install pipenv
-  - pipenv install --dev
-
+  - poetry install
 # command to run tests
 script:
-  - pipenv run pytest --cov=bookmarks_parser
+  - poetry run pytest --cov=bookmarks_parser
 after_success:
   - codecov
