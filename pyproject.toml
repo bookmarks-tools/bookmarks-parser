@@ -8,7 +8,7 @@ readme = "README.md"
 homepage = "https://github.com/andriyor/amalgama-pq"
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.4"
 beautifulsoup4 = "^4.7"
 html5lib = "^1.0"
 
