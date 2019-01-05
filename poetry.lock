@@ -146,6 +146,10 @@ py = ">=1.5.0"
 setuptools = "*"
 six = ">=1.10.0"
 
+[package.dependencies.pathlib2]
+python = "<3.6"
+version = ">=2.2.0"
+
 [[package]]
 category = "dev"
 description = "Pytest plugin for measuring coverage."
@@ -213,8 +217,8 @@ python-versions = "*"
 version = "0.5.1"
 
 [metadata]
-content-hash = "0950a49bd825517f5200d7fd396e24a90f4206f5c0f94b0e788583bcfa0bddf1"
-python-versions = "^3.6"
+content-hash = "6b9c45b667380db460729f128ba46db2b89a5bca13165011ca4fe3f91640f94f"
+python-versions = "^3.5"
 
 [metadata.hashes]
 atomicwrites = ["0312ad34fcad8fac3704d441f7b317e50af620823353ec657a53e981f92920c0", "ec9ae8adaae229e4f8446952d204a3e4b5fdd2d099f9be3aaf556120135fb3ee"]
