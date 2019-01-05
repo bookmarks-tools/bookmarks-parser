@@ -14,6 +14,9 @@ def get_node_data(node):
             icon_uri = child.get('icon_uri')
             if icon_uri:
                 data['icon_uri'] = icon_uri
+            tags = child.get('tags')
+            if tags:
+                data['tags'] = tags.split(',')
         elif child.name == 'h3':
             data['type'] = 'folder'
             data['title'] = child.text
@@ -47,7 +50,7 @@ def process_dir(bookmark_dir, level):
             continue
         item_data = get_node_data(child)
         if level == 0 and (not item_data.get('ns_root')):
-            if not menu_root:
+            if menu_root is None:
                 # For chrome
                 if child.previous_sibling.name == "dt":
                     menu_root = {'title': "Other bookmarks", 'children': [], 'ns_root': 'menu'}
